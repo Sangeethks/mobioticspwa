@@ -21,8 +21,8 @@ import homeNav from './HomeNav.vue';
 // const Offline = () => import (/* webpackChunkName: "home-Home-Offline" */ '../shared/Offline.vue');
 // const AltSnackbar = () => import (/* webpackChunkName: "home-Home-AltSnackbar" */ '../popups/Snackbar.vue');
 
-// import { eventBus } from '../../main'
-// import { altMixins } from '../../mixins'
+import { eventBus } from '../../main';
+import altMixins from '../../mixins';
 // import { store } from '../../store/store'
 // import altMixins from '@/mixins';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
@@ -231,7 +231,7 @@ export default {
       next();
     }
   },
-  // mixins: [altMixins]
+  mixins: [altMixins]
 }
 
 </script>

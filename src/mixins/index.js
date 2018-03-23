@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { router } from './main';
-import { eventBus } from './main';
-import { store } from './store/store';
+// import { router } from './main';
+import { eventBus } from '../main';
+// import { store } from './store/store';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
@@ -23,12 +23,12 @@ export default {
       'setOtherMenus',
     ]),
     toggleLoader(isShow) {
-      var loader = document.getElementById('alt-loader');
-      if (isShow) {
-        loader.style.display = 'block';
-      } else {
-        loader.style.display = 'none';
-      }
+      // var loader = document.getElementById('alt-loader');
+      // if (isShow) {
+      //   loader.style.display = 'block';
+      // } else {
+      //   loader.style.display = 'none';
+      // }
     },
     checkAppMode() {
       // console.log('[mixins | checkAppMode | ]');
@@ -1584,13 +1584,13 @@ export default {
         'gtl_content_parent_title': parentTitle,
         'gtl_episode_title': episodeTitle
       });
-      if(webengage) {
-        webengage.track('gt_page_view' , {
-          'gt_page_title' : title,
-          'gt_content_parent_title' : parentTitle,
-          'gt_episode_title' : episodeTitle
-        });
-      }
+      // if(webengage) {
+      //   webengage.track('gt_page_view' , {
+      //     'gt_page_title' : title,
+      //     'gt_content_parent_title' : parentTitle,
+      //     'gt_episode_title' : episodeTitle
+      //   });
+      // }
     },
   },
 }
