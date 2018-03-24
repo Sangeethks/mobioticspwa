@@ -13,6 +13,10 @@
 <script>
 import homeNav from './HomeNav.vue';
 
+import { eventBus } from '@/main';
+import  mxnUtilities  from '@/mixins/utilities';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
+
 // const homeFeatured = () => import (/* webpackChunkName: "home-Home-homeFeatured" */ './HomeFeatured.vue');
 // const homeGrid = () => import (/* webpackChunkName: "home-Home-homeGrid */ './HomeGrid.vue');
 // const Search = () => import (/* webpackChunkName: "home-Home-Search" */ '../shared/Search.vue');
@@ -21,11 +25,6 @@ import homeNav from './HomeNav.vue';
 // const Offline = () => import (/* webpackChunkName: "home-Home-Offline" */ '../shared/Offline.vue');
 // const AltSnackbar = () => import (/* webpackChunkName: "home-Home-AltSnackbar" */ '../popups/Snackbar.vue');
 
-import { eventBus } from '../../main';
-import altMixins from '../../mixins';
-// import { store } from '../../store/store'
-// import altMixins from '@/mixins';
-import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   data() {
@@ -231,7 +230,7 @@ export default {
       next();
     }
   },
-  mixins: [altMixins]
+  mixins: [ mxnUtilities ]
 }
 
 </script>

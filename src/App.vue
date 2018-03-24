@@ -19,6 +19,7 @@ export default {
   },
   created () {
     this.initApp();
+
     eventBus.$on('toggleAppLoaderEvent', state => { this.showAppLoader = state });
   },
   components: {
@@ -135,10 +136,7 @@ export default {
         // Code change for Domain Switch
         // Comment and uncomment the two lines of code for domain switching
         // Code added by Sangeeth (02-01-2018)
-
         localStorage.setItem('visitedDomain', visitedDomain);
-        // localStorage.setItem('visitedDomain', 'row');
-
         // End of Code change for Domain Switch
 
         this.setAppActive(true);

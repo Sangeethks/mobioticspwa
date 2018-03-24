@@ -5,8 +5,9 @@
 </template>
 
 <script>
-import { eventBus } from '../../main';
-import altMixins from '../../mixins';
+import { eventBus } from '@/main';
+import  mxnUtilities  from '@/mixins/utilities';
+import  mxnMedia  from '@/mixins/media';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 // import nav from'../../assets/js/navtoggle';
@@ -732,6 +733,6 @@ export default {
     eventBus.$off('toggleAppModeChangeEvent', this.homeNavAppModeChangeCB);
     eventBus.$off('togglePopupDefaultDeviceRemoved');
   },
-  mixins: [altMixins]
+  mixins: [ mxnUtilities, mxnMedia ]
 }
 </script>

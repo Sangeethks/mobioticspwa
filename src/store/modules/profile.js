@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import altMixins from '../../mixins';
+import mxnUtilities from '@/mixins/utilities';
 
 const state = {
     editProfileMode: undefined,
@@ -96,7 +96,7 @@ const actions = {
                     limit: queryObj.limit,
                     offset: queryObj.offset,
                     domain: domain,
-                    stampid: altMixins.methods.generateRandomId(32),
+                    stampid: mxnUtilities.methods.generateRandomId(32),
                 },
                 headers: {
                     XSSESSION: user.sessionToken
@@ -129,7 +129,7 @@ const actions = {
                     limit: reqObj.limit,
                     offset: reqObj.offset,
                     domain: domain,
-                    stampid: altMixins.methods.generateRandomId(32),
+                    stampid: mxnUtilities.methods.generateRandomId(32),
                 },
                 headers: {
                     XSSESSION: user.sessionToken
