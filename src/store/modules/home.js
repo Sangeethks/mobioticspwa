@@ -248,11 +248,15 @@ const actions = {
             altUser = JSON.parse(localStorage.getItem('altUser'));
         }
 
-        if (altUser) {
-            requestObj.headers = {
-                XSSESSION: altUser.sessionToken
-            }
+        // if (altUser) {
+        //     requestObj.headers = {
+        //         XSSESSION: altUser.sessionToken
+        //     }
+        // }
+        requestObj.headers = {
+            XSSESSION: '1234567890'
         }
+
         return new Promise((resolve, reject) => {
             Vue.http.get(baseUrl + '/sections/' + id, requestObj).then(
                 (response) => {
@@ -271,27 +275,16 @@ const actions = {
     /**
     * Getting home contents by url
     */
-    actGetContentsByUrl: (context, urlObj) => {
+    actGetContentsByUrl: (context, url) => {
         var baseUrl = context.getters.baseUrl;
         var domain = localStorage.getItem('visitedDomain');
-
-        // console.log('[actGetContentsByUrl | urlObj ]', urlObj);
-
-        // var requestObj = {
-        //     params: {
-        //         domain: domain,
-        //         page: obj.page,
-        //         size: obj.size,
-        //         timestamp: Math.floor(new Date() / 1000)
-        //     }
-        // }
-
-        var requestObj = urlObj.requestObj;
 
         var altUser = undefined;
         if (localStorage.getItem('altUser')) {
             altUser = JSON.parse(localStorage.getItem('altUser'));
         }
+
+        let requestObj = {};
 
         if (altUser) {
             requestObj.headers = {
@@ -300,18 +293,15 @@ const actions = {
         }
 
         return new Promise((resolve, reject) => {
-            Vue.http.get(baseUrl + urlObj.url, urlObj.requestObj).then(
-                (response) => {
-                    if (response.ok && response.status == 200) {
-                        resolve(response.body);
-                    } else {
-                        reject({error: true, message: 'actGetContentsByUrl response error'})
-                    }
-                },
-                (error) => {
-                    reject(error.body);
-                }
-            )
+          Vue.http.get(baseUrl + url, requestObj).then((response) => {
+            if (response.ok && response.status == 200) {
+              resolve(response.body);
+            } else {
+              reject({error: true, message: 'actGetContentsByUrl response error'})
+            }
+          },(error) => {
+            reject(error.body);
+          })
         });
     },
     /**

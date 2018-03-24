@@ -1,5 +1,6 @@
 <template>
   <div id="alt-app">
+    <color-line></color-line>
     <router-view></router-view>
     <app-loader v-show="showAppLoader"></app-loader>
   </div>
@@ -10,6 +11,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { eventBus } from '@/main';
 import mxnUtilities from '@/mixins/utilities';
 import AppLoader from '@/components/shared/AppLoader.vue';
+const ColorLine = () => import(/* webpackChunkName: "ColorLine" */ '@/components/shared/ColorLine.vue');
 
 export default {
   name: 'app',
@@ -28,6 +30,7 @@ export default {
   components: {
     // App Loader component registration
     'app-loader': AppLoader,
+    'color-line': ColorLine,
   },
   methods: {
     ...mapMutations([
@@ -199,5 +202,17 @@ export default {
 </script>
 
 <style>
-
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    background-color: #000;
+    color: #FFF;
+    font-weight: 400;
+    font-family: sans-serif;
+    width: 100%;
+}
+img {
+  width: 100%;
+}
 </style>
