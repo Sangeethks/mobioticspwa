@@ -8,21 +8,25 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { eventBus } from '@/main';
+import mxnUtilities from '@/mixins/utilities';
 import AppLoader from '@/components/shared/AppLoader.vue';
 
 export default {
   name: 'app',
   data () {
     return {
+      // Determines the visibility of the main loader
       showAppLoader: true,
     };
   },
   created () {
+    // Entry point of Apps execution
     this.initApp();
-
+    // Event handler for main loader
     eventBus.$on('toggleAppLoaderEvent', state => { this.showAppLoader = state });
   },
   components: {
+    // App Loader component registration
     'app-loader': AppLoader,
   },
   methods: {
@@ -72,6 +76,9 @@ export default {
         this.setAltMessages(altConfig.messages);
         this.setAltSubsPageMessages(altConfig.subscriptionPage);
 
+        // Get the Domain Data
+        this.getDomain();
+
         localStorage.setItem("paymentProxyURL", altConfig.environment.paymentProxyURL);
         var urlMain = window.location.href;
         var res = urlMain.split("#");
@@ -82,44 +89,36 @@ export default {
 
         localStorage.setItem('altConfig', JSON.stringify(altConfig));
 
-        // Get the Domain Data
-        this.getDomain();
+        // Setting the device ID
+        var altDeviceId = localStorage.getItem('altDeviceId');
+        if (!(altDeviceId)) {
+          localStorage.setItem('altDeviceId', this.generateRandomId(32));
+        }
 
-        // NOTE: TO BE REVERTED BACK
-        // // Setting the device ID
-        // var altDeviceId = localStorage.getItem('altDeviceId');
-        // if (!(altDeviceId)) {
-        //   localStorage.setItem('altDeviceId', this.generateRandomId(32));
-        // }
-        //
-        // // To prompt the user to enable the protected content playback once he enter the playerscreen for the first time
-        // if (!(localStorage.getItem('promptPcPlayback'))) {
-        //   localStorage.setItem('promptPcPlayback', JSON.stringify({ value: true }));
-        // }
-        //
-        // // Register the device name
-        // var altDeviceName = undefined;
-        // if (localStorage.getItem('altDeviceName')) {
-        //   altDeviceName = localStorage.getItem('altDeviceName');
-        // } else {
-        //   var platform = this.altDetectPlatform();
-        //
-        //   // console.log('[actions | actRegisterDevice | platform | ]', platform);
-        //
-        //   if (platform) {
-        //     altDeviceName = platform.os + ' ' + platform.osVersion + ' ' + platform.browser + ' ' + platform.browserVersion;
-        //   }
-        //   // Set the device name to localStorage
-        //   localStorage.setItem('altDeviceName', altDeviceName);
-        // }
+        // To prompt the user to enable the protected content playback once he enter the playerscreen for the first time
+        if (!(localStorage.getItem('promptPcPlayback'))) {
+          localStorage.setItem('promptPcPlayback', JSON.stringify({ value: true }));
+        }
+
+        // Register the device name
+        var altDeviceName = undefined;
+        if (localStorage.getItem('altDeviceName')) {
+          altDeviceName = localStorage.getItem('altDeviceName');
+        } else {
+          var platform = this.altDetectPlatform();
+
+          if (platform) {
+            altDeviceName = platform.os + ' ' + platform.osVersion + ' ' + platform.browser + ' ' + platform.browserVersion;
+          }
+          // Set the device name to localStorage
+          localStorage.setItem('altDeviceName', altDeviceName);
+        }
       }, (error) => {
         console.log('[App -> getConfigData -> error ]', error);
       });
     },
     getDomain() {
       this.actGetDomain().then((response) => {
-        // console.log('[App -> getDomain -> response ]', response);
-
         localStorage.setItem('altGeoData', JSON.stringify(response));
 
         var homeDomain = 'IN';
@@ -141,15 +140,61 @@ export default {
 
         this.setAppActive(true);
 
-        // NOTE: TO BE REVERTED BACK
-        // // Initializing the Mobile Analytics, Notification
-        // this.initAWSMA();
+        // Initializing the Mobile Analytics, Notification
+        this.initAWSMA();
       }, (error) => {
-        // console.log('[App -> getDomain -> error ]', error);
+        console.log('[App -> getDomain -> error ]', error);
       });
     },
+    initAWSMA() {
+      import(/* webpackChunkName: 'AWSMA' */ 'aws-sdk-mobile-analytics').then((AWSMA) => {
 
-  }
+        // Get the config data
+        var altConfig = undefined;
+        if (localStorage.getItem('altConfig')) {
+          altConfig = JSON.parse(localStorage.getItem('altConfig'));
+        }
+
+        // If Config data not present exit out of method
+        if (!altConfig) return;
+
+        // AWS Configuration
+        AWS.config.region = 'us-east-1';
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: 'us-east-1:25fbde9b-f19b-45e3-8e12-ffa78d3c65a8'
+        });
+
+        // Gets the platform information [mixins.js]
+        var userAgentDetails = this.altDetectPlatform();
+
+        // Setting the AWSMA Configuration
+        var options = {
+          appId: altConfig.environment.awsMobileAnalyticsAppID,
+          appTitle : 'ALTBalaji',
+          appVersionName : 'V' + this.appVersionName,
+          appVersionCode : this.appVersionCode,
+          autoSubmitInterval: 20000,
+          platform: 'PWA',
+          sessionLength: 1800000,
+          make: userAgentDetails.browser,
+          globalAttributes: {
+            br_name : userAgentDetails.browser +"-"+ userAgentDetails.browserVersion,
+            br_family:userAgentDetails.browser,
+            br_version : userAgentDetails.browserVersion,
+            br_type : userAgentDetails.browser,
+            user_id: null, //review
+            user_email: null, //review
+            user_session: null, //review
+            utm_source: this.$route.query.utm_source ? this.$route.query.utm_source :null,
+          },
+        };
+        window.mobileAnalyticsClient = new AMA.Manager(options);
+      }).catch((error) => {
+        console.log('[App -> initAWSMA -> error ]', error);
+      });
+    },
+  }, // methods
+  mixins: [ mxnUtilities ]
 }
 </script>
 
