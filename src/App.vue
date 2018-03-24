@@ -1,16 +1,28 @@
 <template>
   <div id="alt-app">
     <router-view></router-view>
+    <app-loader v-show="showAppLoader"></app-loader>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { eventBus } from '@/main';
+import AppLoader from '@/components/shared/AppLoader.vue';
 
 export default {
   name: 'app',
+  data () {
+    return {
+      showAppLoader: true,
+    };
+  },
   created () {
     this.initApp();
+    eventBus.$on('toggleAppLoaderEvent', state => { this.showAppLoader = state });
+  },
+  components: {
+    'app-loader': AppLoader,
   },
   methods: {
     ...mapMutations([

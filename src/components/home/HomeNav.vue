@@ -474,7 +474,8 @@ export default {
       // console.log('[HomeNav | Hide the loader]');
 
       // hide the loader
-      this.toggleLoader(false);
+      eventBus.$emit('toggleAppLoaderEvent', false);
+      // this.toggleLoader(false);
     },
     stuffCommonAttributes() {
       var localAttributeObj = {}
