@@ -12,7 +12,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 .alt-loader {
     position: fixed;
     width: 100%;
