@@ -13,6 +13,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const loadMinified = require('./load-minified')
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const env = config.build.env
 
@@ -40,6 +41,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       },
       sourceMap: true
     }),
+    new CleanWebpackPlugin(['dist'], { root: path.join(__dirname, '../'), verbose: true }),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css')
@@ -100,11 +102,27 @@ const webpackConfig = merge(baseWebpackConfig, {
     ]),
     // service worker caching
     new SWPrecacheWebpackPlugin({
-      cacheId: 'githubpwa',
+      cacheId: Math.floor(new Date() / 1000),
       filename: 'service-worker.js',
       staticFileGlobs: ['dist/**/*.{js,html,css}'],
       minify: true,
-      stripPrefix: 'dist/'
+      stripPrefix: 'dist/',
+      runtimeCaching: [{
+        urlPattern: /^https:\/\/static\.cloud\.altbalaji\.com/,
+        handler: 'fastest'
+      },{
+        urlPattern: /^https:\/\/cdn\.cloud\.altbalaji\.com/,
+        handler: 'fastest'
+      }, {
+        urlPattern: /https:\/\/altbalajipwa\.firebaseapp\.com/,
+        handler: 'cacheFirst'
+      }, {
+        urlPattern: /https:\/\/api\.cloud\.altbalaji\.com/,
+        handler: 'fastest'
+      }, {
+        urlPattern: /\/$/,
+        handler: 'networkFirst'
+      }]
     })
   ]
 })

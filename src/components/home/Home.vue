@@ -3,9 +3,10 @@
     <home-nav :homeSections="homeSections"></home-nav>
 
     <template v-for="(content, index) in contents">
-      <tile-featured v-if="index === 0" :content="content" :key="content.id"></tile-featured>
+      <!-- <tile-featured v-if="index === 0" :content="content" :key="content.id"></tile-featured>
 
-      <tile-one-by-three v-else :content="content" :key="content.id"></tile-one-by-three>
+      <tile-one-by-three v-else :content="content" :key="content.id"></tile-one-by-three> -->
+      <component :is="getTileName(index)" :key="index" :content="content"></component>
     </template>
   </div>
 </template>
@@ -233,13 +234,12 @@ export default {
 
       this.contents = parsedContents;
 
-      console.log('[Home -> processContents -> contents]', this.contents);
-
       eventBus.$emit('toggleAppLoaderEvent', false);
-
     },
-
-  },
+    getTileName (index) {
+      return index === 0 ? 'tile-featured' : 'tile-one-by-three';
+    },
+  }, // methods
   mixins: [ mxnUtilities, mxnMedia ]
 }
 
